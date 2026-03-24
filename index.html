@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Kaden Landry — Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;700;800&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --border: #1e1e2e;
+    --accent: #7cffcb;
+    --accent2: #ff6b6b;
+    --accent3: #ffd93d;
+    --text: #e8e8f0;
+    --muted: #666680;
+    --card-bg: #13131c;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Space Mono', monospace;
+    overflow-x: hidden;
+  }
+
+  /* ── NOISE TEXTURE OVERLAY ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.4;
+  }
+
+  /* ── GRID BACKGROUND ── */
+  .grid-bg {
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(124,255,203,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(124,255,203,0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.2rem 3rem;
+    background: rgba(10,10,15,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 1.1rem;
+    letter-spacing: -0.02em;
+    color: var(--accent);
+    text-decoration: none;
+  }
+
+  .nav-logo span { color: var(--text); }
+
+  nav ul {
+    list-style: none;
+    display: flex;
+    gap: 2.5rem;
+  }
+
+  nav ul li a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.75rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+
+  nav ul li a:hover { color: var(--accent); }
+
+  /* ── HERO ── */
+  #hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding: 0 3rem;
+    z-index: 1;
+  }
+
+  .hero-inner {
+    max-width: 900px;
+    opacity: 0;
+    transform: translateY(30px);
+    animation: fadeUp 0.9s ease forwards 0.2s;
+  }
+
+  .hero-tag {
+    display: inline-block;
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    padding: 0.3rem 0.8rem;
+    margin-bottom: 2rem;
+    border-radius: 2px;
+  }
+
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(3.5rem, 9vw, 7rem);
+    font-weight: 800;
+    line-height: 0.95;
+    letter-spacing: -0.04em;
+    margin-bottom: 1.5rem;
+  }
+
+  h1 .line2 {
+    color: transparent;
+    -webkit-text-stroke: 1.5px var(--text);
+    display: block;
+  }
+
+  .hero-sub {
+    font-size: 0.9rem;
+    color: var(--muted);
+    line-height: 1.8;
+    max-width: 520px;
+    margin-bottom: 2.5rem;
+  }
+
+  .hero-ctas {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    display: inline-block;
+    padding: 0.75rem 1.8rem;
+    text-decoration: none;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    border-radius: 2px;
+    transition: all 0.2s;
+    cursor: pointer;
+    border: none;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: #0a0a0f;
+    font-weight: 700;
+  }
+  .btn-primary:hover { background: #5effc0; }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--border);
+  }
+  .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* Corner decoration */
+  .hero-corner {
+    position: absolute;
+    right: 3rem;
+    bottom: 4rem;
+    opacity: 0;
+    animation: fadeUp 0.9s ease forwards 0.7s;
+  }
+
+  .hero-corner svg { width: 200px; height: 200px; }
+
+  /* ── SECTIONS ── */
+  section {
+    position: relative;
+    z-index: 1;
+    padding: 6rem 3rem;
+  }
+
+  .section-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1rem;
+  }
+
+  h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    margin-bottom: 3rem;
+  }
+
+  /* ── PROJECTS ── */
+  #projects { background: var(--surface); }
+
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 1.5px;
+    background: var(--border);
+    border: 1.5px solid var(--border);
+  }
+
+  .project-card {
+    background: var(--card-bg);
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.25s;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+  }
+
+  .project-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s ease;
+  }
+
+  .project-card:hover { background: #15151f; }
+  .project-card:hover::before { transform: scaleX(1); }
+
+  .project-card.wip { --accent: var(--accent3); }
+  .project-card.wip::before { background: var(--accent3); }
+
+  .card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1.2rem;
+  }
+
+  .project-num {
+    font-size: 0.65rem;
+    color: var(--muted);
+    letter-spacing: 0.15em;
+  }
+
+  .tag {
+    font-size: 0.62rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 0.2rem 0.6rem;
+    border-radius: 2px;
+  }
+
+  .tag-green { background: rgba(124,255,203,0.1); color: var(--accent); }
+  .tag-red   { background: rgba(255,107,107,0.1); color: var(--accent2); }
+  .tag-yellow{ background: rgba(255,217,61,0.1);  color: var(--accent3); }
+  .tag-blue  { background: rgba(100,180,255,0.1); color: #64b4ff; }
+
+  .project-card h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.6rem;
+    line-height: 1.1;
+  }
+
+  .project-card p {
+    font-size: 0.8rem;
+    color: var(--muted);
+    line-height: 1.75;
+    margin-bottom: 1.5rem;
+  }
+
+  .card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .tech-stack {
+    display: flex;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+  }
+
+  .tech {
+    font-size: 0.6rem;
+    color: var(--muted);
+    border: 1px solid var(--border);
+    padding: 0.15rem 0.5rem;
+    border-radius: 2px;
+    letter-spacing: 0.08em;
+  }
+
+  .card-arrow {
+    font-size: 1rem;
+    color: var(--muted);
+    transition: color 0.2s, transform 0.2s;
+  }
+
+  .project-card:hover .card-arrow { color: var(--accent); transform: translate(3px, -3px); }
+
+  /* ── ABOUT ── */
+  #about {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: start;
+  }
+
+  #about .about-left {}
+
+  #about p {
+    font-size: 0.85rem;
+    color: var(--muted);
+    line-height: 2;
+    margin-bottom: 1.2rem;
+  }
+
+  .skills-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+
+  .skill-group h4 {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--accent);
+    margin-bottom: 0.6rem;
+  }
+
+  .skill-group ul {
+    list-style: none;
+  }
+
+  .skill-group ul li {
+    font-size: 0.78rem;
+    color: var(--muted);
+    padding: 0.2rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .skill-group ul li::before {
+    content: '→ ';
+    color: var(--accent);
+  }
+
+  /* ── CONTACT ── */
+  #contact {
+    background: var(--surface);
+    text-align: center;
+  }
+
+  #contact h2 { margin-bottom: 1rem; }
+
+  #contact p {
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin-bottom: 2.5rem;
+  }
+
+  .contact-links {
+    display: flex;
+    gap: 1.2rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    position: relative;
+    z-index: 1;
+    padding: 2rem 3rem;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  footer span {
+    font-size: 0.7rem;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  .spinning { animation: spin 20s linear infinite; }
+
+  /* ── SCROLLED-IN ── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* ── MOBILE ── */
+  @media (max-width: 768px) {
+    nav { padding: 1rem 1.5rem; }
+    nav ul { gap: 1.2rem; }
+    #hero { padding: 0 1.5rem; padding-top: 100px; }
+    section { padding: 4rem 1.5rem; }
+    #about { grid-template-columns: 1fr; gap: 2rem; }
+    .hero-corner { display: none; }
+    footer { flex-direction: column; gap: 0.5rem; text-align: center; }
+  }
+
+  /* ── CURSOR DOT ── */
+  .cursor {
+    position: fixed;
+    width: 8px; height: 8px;
+    background: var(--accent);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 10000;
+    transition: transform 0.15s ease;
+    mix-blend-mode: difference;
+  }
+</style>
+</head>
+<body>
+
+<div class="grid-bg"></div>
+<div class="cursor" id="cursor"></div>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="#"><span>KL</span>.dev</a>
+  <ul>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#contact">Contact</a></li>
+    <li><a href="https://github.com/LandryTech" target="_blank">GitHub ↗</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-inner">
+    <div class="hero-tag">CS / Applied AI · Wentworth Institute of Technology</div>
+    <h1>
+      Kaden
+      <span class="line2">Landry</span>
+    </h1>
+    <p class="hero-sub">
+      Sophomore building things at the intersection of software, hardware, and intelligence —
+      from raycasting engines and embedded telemetry systems to ML-powered data pipelines.
+    </p>
+    <div class="hero-ctas">
+      <a class="btn btn-primary" href="#projects">View Projects</a>
+      <a class="btn btn-ghost" href="https://www.linkedin.com/in/kadenlandry" target="_blank">LinkedIn ↗</a>
+      <a class="btn btn-ghost" href="https://github.com/LandryTech" target="_blank">GitHub ↗</a>
+    </div>
+  </div>
+
+  <div class="hero-corner">
+    <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <g class="spinning">
+        <circle cx="100" cy="100" r="90" stroke="#1e1e2e" stroke-width="1"/>
+        <circle cx="100" cy="100" r="70" stroke="#1e1e2e" stroke-width="1" stroke-dasharray="4 8"/>
+        <circle cx="100" cy="100" r="50" stroke="rgba(124,255,203,0.2)" stroke-width="1"/>
+      </g>
+      <text x="100" y="100" text-anchor="middle" dominant-baseline="middle"
+        font-family="Space Mono" font-size="11" fill="#7cffcb" letter-spacing="2">
+        ◎ BUILD
+      </text>
+    </svg>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="section-label">// selected work</div>
+  <h2 class="reveal">What I've<br>Built</h2>
+
+  <div class="projects-grid">
+
+    <!-- OccupancyInsight -->
+    <a class="project-card reveal" href="https://github.com/LandryTech/OccupancyInsight" target="_blank">
+      <div class="card-top">
+        <span class="project-num">01</span>
+        <span class="tag tag-green">ML · Data Pipeline</span>
+      </div>
+      <h3>Occupancy­Insight</h3>
+      <p>Automated gym occupancy monitoring system for WIT's Schumann Fitness Center.
+         Selenium scraper feeds a SQLite pipeline with timestamped occupancy, weather,
+         and precipitation data — ML prediction phase incoming.</p>
+      <div class="card-footer">
+        <div class="tech-stack">
+          <span class="tech">Python</span>
+          <span class="tech">Selenium</span>
+          <span class="tech">SQLite</span>
+          <span class="tech">REST API</span>
+        </div>
+        <span class="card-arrow">↗</span>
+      </div>
+    </a>
+
+    <!-- Raygen -->
+    <a class="project-card reveal" href="https://github.com/LandryTech/Raygen" target="_blank">
+      <div class="card-top">
+        <span class="project-num">02</span>
+        <span class="tag tag-blue">Graphics · Engine</span>
+      </div>
+      <h3>Raygen</h3>
+      <p>A performant 2D raycasting engine in Java rendering a pseudo-3D first-person
+         perspective — inspired by Wolfenstein 3D. Supports custom SVG-based map generation,
+         dynamic collision detection, and in-game FOV / render-distance tuning.</p>
+      <div class="card-footer">
+        <div class="tech-stack">
+          <span class="tech">Java</span>
+          <span class="tech">JFrame</span>
+          <span class="tech">AWT/Swing</span>
+        </div>
+        <span class="card-arrow">↗</span>
+      </div>
+    </a>
+
+    <!-- Collab Canvas -->
+    <a class="project-card reveal" href="https://github.com/LandryTech/Collab-Canvas" target="_blank">
+      <div class="card-top">
+        <span class="project-num">03</span>
+        <span class="tag tag-red">Networking · Real-Time</span>
+      </div>
+      <h3>Collab-Canvas</h3>
+      <p>Real-time collaborative whiteboard built in Python with Pygame.
+         Multiple clients draw and sync instantly via a custom non-blocking
+         socket architecture — responsive UI even under network load.</p>
+      <div class="card-footer">
+        <div class="tech-stack">
+          <span class="tech">Python</span>
+          <span class="tech">Pygame</span>
+          <span class="tech">Sockets</span>
+        </div>
+        <span class="card-arrow">↗</span>
+      </div>
+    </a>
+
+    <!-- SAE Baja Telemetry (WIP) -->
+    <div class="project-card wip reveal">
+      <div class="card-top">
+        <span class="project-num">04</span>
+        <span class="tag tag-yellow">⚙ In Progress</span>
+      </div>
+      <h3>SAE Baja Telemetry</h3>
+      <p>Embedded telemetry system for an SAE Baja off-road race vehicle.
+         Dual ESP32 setup: one reads hall effect sensors on the driveshaft
+         to calculate live wheel speed; the other tracks fuel flow and drives
+         the cockpit display. GPS track mapping and pit-crew live data
+         streaming planned for upcoming semesters.</p>
+      <div class="card-footer">
+        <div class="tech-stack">
+          <span class="tech">ESP32</span>
+          <span class="tech">C++</span>
+          <span class="tech">Sensors</span>
+          <span class="tech">GPS</span>
+        </div>
+        <span class="card-arrow" style="color: var(--accent3);">🔧</span>
+      </div>
+    </div>
+
+    <!-- FRC Robot -->
+    <a class="project-card reveal" href="https://github.com/LandryTech/1027_2024_Main" target="_blank">
+      <div class="card-top">
+        <span class="project-num">05</span>
+        <span class="tag tag-blue">Robotics · FRC</span>
+      </div>
+      <h3>FRC Team 1027 — 2024</h3>
+      <p>Tournament-ready robot code written as Programming Lead in senior year of high school.
+         Built on a swerve drive base with 2nd-order kinematics to eliminate drift,
+         PathPlanner autonomous routines, and a custom log manager compatible with Advantage Scope.</p>
+      <div class="card-footer">
+        <div class="tech-stack">
+          <span class="tech">Java</span>
+          <span class="tech">WPILib</span>
+          <span class="tech">PathPlanner</span>
+          <span class="tech">CTRE</span>
+        </div>
+        <span class="card-arrow">↗</span>
+      </div>
+    </a>
+
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="about-left">
+    <div class="section-label">// about me</div>
+    <h2 class="reveal">Builder.<br>Thinker.<br>Tinkerer.</h2>
+    <p class="reveal">
+      I'm a sophomore at Wentworth Institute of Technology studying Computer Science
+      and Applied AI. I like working on things that are real — not just exercises,
+      but systems that run, collect data, and solve actual problems.
+    </p>
+    <p class="reveal">
+      My projects span embedded hardware (ESP32, hall effect sensors),
+      software systems (data pipelines, networked apps), graphics engines,
+      and competitive robotics. I was Programming Lead for FRC Team 1027
+      in my senior year of high school, which is where a lot of my love for
+      systems-level thinking was forged.
+    </p>
+    <p class="reveal">
+      Currently focused on adding an ML prediction layer to OccupancyInsight
+      and pushing the SAE Baja telemetry system toward live GPS track mapping.
+    </p>
+    <div style="margin-top: 2rem;">
+      <a class="btn btn-ghost reveal" href="https://www.linkedin.com/in/kadenlandry" target="_blank">Connect on LinkedIn ↗</a>
+    </div>
+  </div>
+
+  <div class="about-right reveal">
+    <div class="section-label" style="margin-top: 0.5rem;">// skills & tools</div>
+    <div class="skills-grid" style="margin-top: 1.5rem;">
+      <div class="skill-group">
+        <h4>Languages</h4>
+        <ul>
+          <li>Python</li>
+          <li>Java</li>
+          <li>C / C++</li>
+          <li>JavaScript</li>
+          <li>SQL</li>
+        </ul>
+      </div>
+      <div class="skill-group">
+        <h4>Hardware</h4>
+        <ul>
+          <li>ESP32</li>
+          <li>Hall Effect Sensors</li>
+          <li>Flow Sensors</li>
+          <li>LCD Displays</li>
+          <li>GPS Modules</li>
+        </ul>
+      </div>
+      <div class="skill-group">
+        <h4>Tools & Libs</h4>
+        <ul>
+          <li>Selenium</li>
+          <li>SQLite</li>
+          <li>Pygame</li>
+          <li>WPILib</li>
+          <li>Git / GitHub</li>
+        </ul>
+      </div>
+      <div class="skill-group">
+        <h4>Domains</h4>
+        <ul>
+          <li>Machine Learning</li>
+          <li>Embedded Systems</li>
+          <li>Computer Graphics</li>
+          <li>Networked Apps</li>
+          <li>Competitive Robotics</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="section-label">// get in touch</div>
+  <h2 class="reveal">Let's Talk</h2>
+  <p class="reveal">Open to internships, collaborations, and interesting conversations.</p>
+  <div class="contact-links reveal">
+    <a class="btn btn-primary" href="mailto:kadenlandry@example.com">Email Me</a>
+    <a class="btn btn-ghost" href="https://www.linkedin.com/in/kadenlandry" target="_blank">LinkedIn ↗</a>
+    <a class="btn btn-ghost" href="https://github.com/LandryTech" target="_blank">GitHub ↗</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <span>Kaden Landry © 2025</span>
+  <span>CS / Applied AI · Wentworth Institute of Technology</span>
+  <span>Built to be hosted free on GitHub Pages</span>
+</footer>
+
+<script>
+  // Cursor
+  const cursor = document.getElementById('cursor');
+  document.addEventListener('mousemove', e => {
+    cursor.style.left = e.clientX - 4 + 'px';
+    cursor.style.top = e.clientY - 4 + 'px';
+  });
+
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 80);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+
+  reveals.forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
