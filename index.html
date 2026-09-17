@@ -16,7 +16,7 @@
     --accent2: #ff6b6b;
     --accent3: #ffd93d;
     --text: #e8e8f0;
-    --muted: #666680;
+    --muted: #8888a0;
     --card-bg: #13131c;
   }
 
@@ -411,6 +411,57 @@
     letter-spacing: 0.08em;
   }
 
+  /* ── PRESS ── */
+  #press {
+    padding: 4rem 3rem;
+  }
+
+  .press-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 0;
+  }
+
+  .press-link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.85rem 1.2rem;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    text-decoration: none;
+    color: var(--text);
+    font-size: 0.78rem;
+    transition: border-color 0.2s, background 0.2s;
+    flex: 1 1 280px;
+  }
+
+  .press-link:hover {
+    border-color: var(--accent);
+    background: #15151f;
+  }
+
+  .press-link:hover .press-arrow { color: var(--accent); }
+
+  .press-source {
+    font-size: 0.62rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    display: block;
+    margin-top: 0.2rem;
+  }
+
+  .press-arrow {
+    margin-left: auto;
+    color: var(--muted);
+    font-size: 0.9rem;
+    flex-shrink: 0;
+    transition: color 0.2s;
+  }
+
   /* ── ANIMATIONS ── */
   @keyframes fadeUp {
     to { opacity: 1; transform: translateY(0); }
@@ -467,6 +518,7 @@
   <a class="nav-logo" href="#"><span>LandryTech</span>.dev</a>
   <ul>
     <li><a href="#projects">Projects</a></li>
+    <li><a href="#press">Press</a></li>
     <li><a href="#about">About</a></li>
     <li><a href="#contact">Contact</a></li>
     <li><a href="https://github.com/LandryTech" target="_blank">GitHub ↗</a></li>
@@ -606,8 +658,7 @@
       </div>
       <h3>FRC Team 1027 — 2024</h3>
       <p>Tournament-ready robot code written as Programming Lead in senior year of high school.
-         Built upon a existing swerve drive base template with 2nd-order kinematics to eliminate drift,
-         Mapping custom controls and routines onto various controllers,
+         Built upon an existing swerve drive base template with 2nd-order kinematics to eliminate drift,
          PathPlanner autonomous routines, and a custom log manager compatible with Advantage Scope.</p>
       <div class="card-footer">
         <div class="tech-stack">
@@ -623,15 +674,48 @@
   </div>
 </section>
 
+<!-- PRESS -->
+<section id="press">
+  <div class="section-label">// press & coverage</div>
+  <h2 class="reveal">In the<br>News</h2>
+  <div class="press-links">
+
+    <a class="press-link reveal" href="https://wit.edu/news/hackathon-hands-students-global-supply-chain-crisis" target="_blank">
+      <div>
+        Hackathon Hands Students a Global Supply Chain in Crisis
+        <span class="press-source">Wentworth Institute of Technology</span>
+      </div>
+      <span class="press-arrow">↗</span>
+    </a>
+
+    <a class="press-link reveal" href="https://study-in-usa.com/blog/wentworth-institute-of-technology-hackathon-tackles-global-supply-chain-disruptions-with-applied-ai/" target="_blank">
+      <div>
+        WIT Hackathon Tackles Global Supply Chain Disruptions with Applied AI
+        <span class="press-source">Study in the USA</span>
+      </div>
+      <span class="press-arrow">↗</span>
+    </a>
+
+    <a class="press-link reveal" href="https://www.masslive.com/news/2023/04/the-mechatronic-maniacs-of-west-springfield-compete-with-robots-heres-a-look-under-the-hood.html" target="_blank">
+      <div>
+        The Mechatronic Maniacs of West Springfield Compete with Robots
+        <span class="press-source">MassLive</span>
+      </div>
+      <span class="press-arrow">↗</span>
+    </a>
+
+  </div>
+</section>
+
 <!-- ABOUT -->
 <section id="about">
   <div class="about-left">
     <div class="section-label">// about me</div>
     <h2 class="reveal">Builder.<br>Thinker.<br>Tinkerer.</h2>
     <p class="reveal">
-      I'm a Junior at Wentworth Institute of Technology studying
-      Applied Artificial Intelligence with a large personal interest in Robotic applications of AI. I like working on things that are real — not just exercises,
-      but systems that run, collect data, and solve actual problems.
+      I'm a Junior at Wentworth Institute of Technology studying Applied Artificial Intelligence,
+      with a focus on robotics and real-world AI systems. I like working on things that actually run —
+      not just exercises, but pipelines, hardware, and tools that solve real problems.
     </p>
     <p class="reveal">
       My projects span embedded hardware (ESP32, hall effect sensors),
