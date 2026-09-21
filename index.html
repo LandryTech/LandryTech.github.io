@@ -100,8 +100,11 @@
   #hero {
     position: relative;
     min-height: 100vh;
-    display: flex;
+    display: grid;
+    grid-template-columns: minmax(0, 900px) auto;
     align-items: center;
+    justify-content: space-between;
+    gap: 3rem;
     padding: 0 3rem;
     z-index: 1;
   }
@@ -181,16 +184,99 @@
   }
   .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
 
-  /* Corner decoration */
-  .hero-corner {
-    position: absolute;
-    right: 3rem;
-    bottom: 4rem;
+  /* ── HERO PHOTO ── */
+  .hero-photo-wrap {
+    position: relative;
+    justify-self: end;
+    width: clamp(190px, 20vw, 280px);
+    aspect-ratio: 1 / 1;
     opacity: 0;
-    animation: fadeUp 0.9s ease forwards 0.7s;
+    transform: translateY(30px);
+    animation: fadeUp 0.9s ease forwards 0.5s;
   }
 
-  .hero-corner svg { width: 200px; height: 200px; }
+  .hero-photo-frame {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    overflow: hidden;
+  }
+
+  .hero-photo-frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    /* Duotone-leaning treatment so a full-color photo sits naturally in the
+       dark, mint-accented palette. Drop your own image in and adjust to taste. */
+    filter: grayscale(80%) contrast(1.08) brightness(0.85) saturate(1.1);
+    transition: filter 0.35s ease;
+  }
+
+  .hero-photo-wrap:hover .hero-photo-frame img {
+    filter: grayscale(20%) contrast(1.05) brightness(0.95) saturate(1.05);
+  }
+
+  /* Duotone tint overlay — multiplies a mint tone into the shadows */
+  .hero-photo-frame::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(160deg, rgba(124,255,203,0.22), rgba(10,10,15,0.05) 55%);
+    mix-blend-mode: color;
+    pointer-events: none;
+  }
+
+  /* Placeholder state — shown until a real <img> loads successfully */
+  .hero-photo-frame .photo-placeholder {
+    position: absolute;
+    inset: 0;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    background:
+      linear-gradient(rgba(124,255,203,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(124,255,203,0.04) 1px, transparent 1px);
+    background-size: 20px 20px;
+    text-align: center;
+    padding: 1rem;
+  }
+
+  .hero-photo-wrap.no-photo .hero-photo-frame img { display: none; }
+  .hero-photo-wrap.no-photo .hero-photo-frame .photo-placeholder { display: flex; }
+
+  .photo-placeholder .ph-icon {
+    font-size: 1.8rem;
+    color: var(--muted);
+    opacity: 0.6;
+  }
+
+  .photo-placeholder span.ph-label {
+    font-size: 0.62rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  /* Corner brackets — echoes the reticle motif used elsewhere in the hero */
+  .hero-photo-wrap .corner {
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    border: 1.5px solid var(--accent);
+    z-index: 2;
+    transition: width 0.25s ease, height 0.25s ease;
+  }
+  .corner-tl { top: -1px; left: -1px; border-right: none; border-bottom: none; }
+  .corner-tr { top: -1px; right: -1px; border-left: none; border-bottom: none; }
+  .corner-bl { bottom: -1px; left: -1px; border-right: none; border-top: none; }
+  .corner-br { bottom: -1px; right: -1px; border-left: none; border-top: none; }
+
+  .hero-photo-wrap:hover .corner { width: 26px; height: 26px; }
 
   /* ── SECTIONS ── */
   section {
@@ -488,10 +574,19 @@
   @media (max-width: 768px) {
     nav { padding: 1rem 1.5rem; }
     nav ul { gap: 1.2rem; }
-    #hero { padding: 0 1.5rem; padding-top: 100px; }
+    #hero {
+      grid-template-columns: 1fr;
+      padding: 0 1.5rem;
+      padding-top: 100px;
+      gap: 2rem;
+    }
+    .hero-photo-wrap {
+      justify-self: start;
+      width: 160px;
+      order: -1;
+    }
     section { padding: 4rem 1.5rem; }
     #about { grid-template-columns: 1fr; gap: 2rem; }
-    .hero-corner { display: none; }
     footer { flex-direction: column; gap: 0.5rem; text-align: center; }
   }
 
@@ -544,18 +639,28 @@
     </div>
   </div>
 
-  <div class="hero-corner">
-    <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <g class="spinning">
-        <circle cx="100" cy="100" r="90" stroke="#1e1e2e" stroke-width="1"/>
-        <circle cx="100" cy="100" r="70" stroke="#1e1e2e" stroke-width="1" stroke-dasharray="4 8"/>
-        <circle cx="100" cy="100" r="50" stroke="rgba(124,255,203,0.2)" stroke-width="1"/>
-      </g>
-      <text x="100" y="100" text-anchor="middle" dominant-baseline="middle"
-        font-family="Space Mono" font-size="11" fill="#7cffcb" letter-spacing="2">
-        ◎ BUILD
-      </text>
-    </svg>
+  <!--
+    HEADSHOT: replace the src below with your own photo.
+    Recommended: square crop, 800x800px minimum, JPG/WEBP, plain or blurred
+    background, good even lighting, shoulders-up or waist-up framing.
+    Until a valid image is in place, a placeholder frame is shown automatically.
+  -->
+  <div class="hero-photo-wrap">
+    <div class="corner corner-tl"></div>
+    <div class="corner corner-tr"></div>
+    <div class="corner corner-bl"></div>
+    <div class="corner corner-br"></div>
+    <div class="hero-photo-frame">
+      <img
+        src="headshot.jpg"
+        alt="Kaden Landry"
+        onerror="this.closest('.hero-photo-wrap').classList.add('no-photo')"
+      />
+      <div class="photo-placeholder">
+        <span class="ph-icon">◎</span>
+        <span class="ph-label">Add headshot.jpg</span>
+      </div>
+    </div>
   </div>
 </section>
 
